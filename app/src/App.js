@@ -1,12 +1,34 @@
 import './App.css';
-import MyButton from './MyButton.js'
+import {useState} from 'react';
+import AlunniTable from './AlunniTable';
 
 function App() {
 
+  const [alunni, setAlunni] = useState([]);
+
+  const [load, setLoad] = useState(false);
+
+  async function caricaAlunni(){
+    setLoad(true);
+    const data = await fetch("http://localhost:8080/alunni", { method:"GET" });
+    const mieiDati = await data.json();
+    setAlunni(mieiDati);
+    setLoad(false);
+  }
+
   return (
-    <div>
-      <h1>Welcome to my app</h1>
-      <MyButton />
+  <div className="App">
+    {alunni.length > 0 ? (
+      <AlunniTable myArray={alunni} setAlunni={setAlunni} />
+    ):(
+      <div>
+        {load ? (
+         <div>in Load</div>
+        ) : (
+        <button onClick={caricaAlunni}>carica alunni</button>
+        )}
+        </div>
+    )}
     </div>
   );
 
